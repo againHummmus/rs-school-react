@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Trajan Pro";
+  src: url("./assets/fonts/Jersey10-Regular.ttf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-text: rgb(230, 245, 255);
+  --color-background: rgb(5, 10, 20);
+  --color-foreground: rgb(160, 200, 240);
+  --color-accent: rgb(255, 229, 180);
+  --font-display: "Trajan Pro", serif;
+}
+
+@utility container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-4xl);
+}
