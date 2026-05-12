@@ -1,7 +1,6 @@
 import React from "react";
 
 type CardProps = {
-  mal_id: number;
   title_english: string;
   title_japanese: string;
   episodes: number;
