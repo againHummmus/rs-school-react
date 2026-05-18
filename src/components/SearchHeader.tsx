@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from './ui/Button';
 import TextInput from './ui/TextInput';
 
@@ -7,52 +7,40 @@ type HeaderPropsType = {
   setSearchItem: (searchItem: string) => void;
 };
 
-type HeaderStateType = {
-  inputValue: string;
-};
+export default function SearchHeader({
+  searchItem,
+  setSearchItem,
+}: HeaderPropsType) {
+  const [inputValue, setInputValue] = useState(searchItem);
 
-export default class SearchHeader extends React.Component<HeaderPropsType, HeaderStateType> {
-  constructor(props: HeaderPropsType) {
-    super(props);
-    this.state = { inputValue: props.searchItem };
-  }
+  useEffect(() => {
+    setInputValue(searchItem);
+  }, [searchItem]);
 
-  handleSearch = () => {
-    const cleanValue = this.state.inputValue.trim();
-    this.props.setSearchItem(cleanValue);
+  const handleSearch = () => {
+    const cleanValue = inputValue.trim();
+    setSearchItem(cleanValue);
   };
 
-  onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ inputValue: e.target.value });
+  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
   };
 
-  componentDidUpdate(prevProps: Readonly<HeaderPropsType>): void {
-    if (prevProps.searchItem !== this.props.searchItem) {
-      this.setState({ inputValue: this.props.searchItem });
-    }
-  }
+  return (
+    <div className="flex flex-col gap-4 border border-foreground bg-foreground/10 rounded-3xl p-6 backdrop-blur-lg">
+      <h1 className="text-text font-display text-4xl">
+        Search for anime!
+      </h1>
 
-  render() {
-    return (
-      <div className="flex flex-col gap-4 border border-foreground bg-foreground/10 rounded-3xl p-6 backdrop-blur-lg">
-        <h1 className="text-text font-display text-center text-7xl">
-          Search for anime
-        </h1>
-        
-        <div className='flex gap-2 items-center'>
-          <TextInput
-            value={this.state.inputValue}
-            onChange={this.onChangeInput}
-            placeholder="Search for a character..."
-          />
-          
-          <Button
-            onClick={this.handleSearch}
-          >
-            Search
-          </Button>
-        </div>
+      <div className="flex gap-2 items-center">
+        <TextInput
+          value={inputValue}
+          onChange={onChangeInput}
+          placeholder="Search for a character..."
+        />
+
+        <Button onClick={handleSearch}>Search</Button>
       </div>
-    );
-  }
+    </div>
+  );
 }
