@@ -18,7 +18,7 @@ export default function MiniCard({ mal_id, title_english, title_japanese, images
         pathname: `details/${mal_id}`,
         search: page ? `?page=${page}` : '',
       }}
-      className="flex items-center gap-3 rounded-2xl border border-accent-light/30 hover:border-accent-light/60 hover:bg-accent-light/20 transition-all bg-foreground px-3 py-2 cursor-pointer"
+      className="flex items-center gap-3 rounded-2xl border border-accent-light/30 hover:border-accent-light/60 bg-accent-light/10 hover:bg-accent-light/20 transition-all px-3 py-2 cursor-pointer"
     >
       <img
         src={images.webp.image_url}

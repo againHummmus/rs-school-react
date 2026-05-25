@@ -18,7 +18,7 @@ export default function AnimeDetails() {
 
   return (
     <div
-      className="sticky top-[80px] aspect-square min-w-1/2 max-w-1/2 flex flex-col gap-4 rounded-2xl border border-foreground/30 bg-foreground p-4"
+      className="sticky top-20 aspect-square min-w-1/2 max-w-1/2 flex flex-col gap-4 rounded-2xl border border-foreground/30 bg-foreground p-4"
       onClick={(e) => e.stopPropagation()}
     >
       <Link

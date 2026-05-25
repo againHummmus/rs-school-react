@@ -9,12 +9,29 @@
 }
 
 @theme {
+  --color-main-background: rgb(5, 10, 20);
   --color-text: rgb(230, 245, 255);
   --color-background: rgb(5, 10, 20);
   --color-foreground: rgb(230, 245, 255);
   --color-accent-light: rgb(140, 184, 255);
   --color-accent-dark: rgb(15, 53, 115);
   --font-display: "Trajan Pro", serif;
+}
+
+.light {
+  --color-main-background: rgb(5, 10, 20);
+  --color-background: rgb(230, 245, 255);
+  --color-foreground: rgb(5, 10, 20);
+  --color-accent-light: rgb(15, 53, 115);
+  --color-accent-dark: rgb(140, 184, 255);
+}
+
+.dark {
+  --color-main-background: rgb(230, 245, 255);
+  --color-background: rgb(5, 10, 20);
+  --color-foreground: rgb(230, 245, 255);
+  --color-accent-light: rgb(140, 184, 255);
+  --color-accent-dark: rgb(15, 53, 115);
 }
 
 @utility container {

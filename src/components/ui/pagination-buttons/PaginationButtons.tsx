@@ -28,7 +28,7 @@ export default function PaginationButtons({ total, currentPage }: { total: numbe
     const createPageUrl = (page: number) => `?page=${page}`;
 
     return (
-        <div className='sticky bottom-3 w-fit mx-auto px-10 flex flex-row justify-center rounded-full items-center gap-2 py-2 bg-foreground backdrop-blur-md z-10'>
+        <div className='sticky bottom-3 w-fit mx-auto px-10 flex flex-row justify-center rounded-full items-center gap-2 py-2 bg-accent-light backdrop-blur-md z-10'>
             <NavLink
                 to={createPageUrl(currentPage - 1)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
