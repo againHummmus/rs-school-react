@@ -1,14 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
+import { MemoryRouter, useLoaderData } from 'react-router-dom';
 import AnimeDetails from './AnimeDetails';
-import { fetchAnimeById } from '../../lib/fetch';
 
-vi.mock('../lib/fetch', () => ({
-  default: vi.fn(),
-  fetchAnimeById: vi.fn(),
-}));
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
+  return { ...actual, useLoaderData: vi.fn() };
+});
 
 const mockAnimeDetail = {
   mal_id: 1,
@@ -33,82 +31,53 @@ const mockAnimeDetail = {
   ],
 };
 
+function renderDetails(initialEntry = '/details/1') {
+  return render(
+    <MemoryRouter initialEntries={[initialEntry]}>
+      <AnimeDetails />
+    </MemoryRouter>
+  );
+}
+
 describe('AnimeDetails Component', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    vi.mocked(fetchAnimeById).mockReturnValue(new Promise(() => {}));
+    vi.mocked(useLoaderData).mockReturnValue(mockAnimeDetail);
   });
 
-  test('renders nothing when no details param is set', () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <AnimeDetails />
-      </MemoryRouter>
-    );
-    expect(screen.queryByText(/wait a second/i)).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /close details/i })).not.toBeInTheDocument();
-  });
-
-  test('renders loading state when details param is set', () => {
-    render(
-      <MemoryRouter initialEntries={['/?details=1']}>
-        <AnimeDetails />
-      </MemoryRouter>
-    );
-    expect(screen.getByText(/wait a second/i)).toBeInTheDocument();
-  });
-
-  test('renders anime details on successful fetch', async () => {
-    vi.mocked(fetchAnimeById).mockResolvedValue({ data: mockAnimeDetail });
-
-    render(
-      <MemoryRouter initialEntries={['/?details=1']}>
-        <AnimeDetails />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(screen.queryByText(/wait a second/i)).not.toBeInTheDocument();
-    });
-
+  test('renders anime title', () => {
+    renderDetails();
     expect(screen.getByRole('heading', { name: /cowboy bebop/i })).toBeInTheDocument();
+  });
+
+  test('renders anime image with correct src', () => {
+    renderDetails();
+    expect(screen.getByRole('img')).toHaveAttribute('src', mockAnimeDetail.images.webp.large_image_url);
+  });
+
+  test('renders genres', () => {
+    renderDetails();
     expect(screen.getByText('Action')).toBeInTheDocument();
     expect(screen.getByText('Drama')).toBeInTheDocument();
-    expect(fetchAnimeById).toHaveBeenCalledWith(1);
   });
 
-  test('renders error message on failed fetch', async () => {
-    vi.mocked(fetchAnimeById).mockRejectedValue(new Error('Not Found'));
-
-    render(
-      <MemoryRouter initialEntries={['/?details=1']}>
-        <AnimeDetails />
-      </MemoryRouter>
-    );
-
-    const errorEl = await screen.findByText(/error: not found/i);
-    expect(errorEl).toBeInTheDocument();
+  test('renders score, episodes, year and status', () => {
+    renderDetails();
+    expect(screen.getByText('8.75')).toBeInTheDocument();
+    expect(screen.getByText('26')).toBeInTheDocument();
+    expect(screen.getByText('1998')).toBeInTheDocument();
+    expect(screen.getByText('Finished Airing')).toBeInTheDocument();
   });
 
-  test('closes details panel when close button is clicked', async () => {
-    vi.mocked(fetchAnimeById).mockResolvedValue({ data: mockAnimeDetail });
-    const user = userEvent.setup();
+  test('close link points to home', () => {
+    renderDetails();
+    const closeLink = screen.getByRole('link', { name: /close details/i });
+    expect(closeLink).toHaveAttribute('href', '/');
+  });
 
-    render(
-      <MemoryRouter initialEntries={['/?details=1']}>
-        <AnimeDetails />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /cowboy bebop/i })).toBeInTheDocument();
-    });
-
-    const closeButton = screen.getByRole('button', { name: /close details/i });
-    await user.click(closeButton);
-
-    await waitFor(() => {
-      expect(screen.queryByRole('heading', { name: /cowboy bebop/i })).not.toBeInTheDocument();
-    });
+  test('close link preserves page param', () => {
+    renderDetails('/details/1?page=3');
+    const closeLink = screen.getByRole('link', { name: /close details/i });
+    expect(closeLink).toHaveAttribute('href', '/?page=3');
   });
 });
+

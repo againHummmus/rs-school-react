@@ -1,6 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import ErrorBoundary from './ErrorBoundary';
+
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof import('react-router')>('react-router');
+  return { ...actual, useRouteError: vi.fn().mockReturnValue(undefined) };
+});
 
 const ProblematicComponent = ({ shouldThrow, fatalError }: { shouldThrow: boolean; fatalError?: string }) => {
   if (shouldThrow) {
@@ -22,11 +28,15 @@ describe('Error Boundary Component', () => {
 
   test('renders error boundary', () => {
     const errorMessage = 'Fatal Error!!!';
-    render(
-      <ErrorBoundary>
-        <ProblematicComponent shouldThrow={true} fatalError={errorMessage} />
-      </ErrorBoundary>
-    );
+    const router = createMemoryRouter([{
+      path: '/',
+      element: (
+        <ErrorBoundary>
+          <ProblematicComponent shouldThrow={true} fatalError={errorMessage} />
+        </ErrorBoundary>
+      ),
+    }]);
+    render(<RouterProvider router={router} />);
 
     const errorTitle = screen.getByText('Something went wrong');
     const errorText = screen.getByText(`Error: ${errorMessage}`);

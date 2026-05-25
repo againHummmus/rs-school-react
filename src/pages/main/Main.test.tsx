@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import Main from './Main';
 
-vi.mock('../components/SearchHeader', () => ({
+vi.mock('../../components/widgets/search-header/SearchHeader', () => ({
   default: ({ searchItem, setSearchItem }: { searchItem: string; setSearchItem: (val: string) => void }) => (
     <div data-testid="search-header">
       <input
@@ -16,18 +16,10 @@ vi.mock('../components/SearchHeader', () => ({
   ),
 }));
 
-vi.mock('../components/SearchOutput', () => ({
+vi.mock('../../components/widgets/search-output/SearchOutput', () => ({
   default: ({ searchItem }: { searchItem: string }) => (
     <div data-testid="search-output">Current search: {searchItem || 'none'}</div>
   ),
-}));
-
-vi.mock('../components/ui/ErrorButton', () => ({
-  default: () => <button data-testid="error-button">Trigger Error</button>,
-}));
-
-vi.mock('./AnimeDetails', () => ({
-  default: () => <div data-testid="anime-details" />,
 }));
 
 const renderMain = (initialEntry = '/') =>
@@ -84,13 +76,8 @@ describe('Main Page', () => {
     expect(setItemSpy).not.toHaveBeenCalled();
   });
 
-  test('does not show AnimeDetails when no details param in URL', () => {
+  test('does not render anime-details in main body', () => {
     renderMain('/');
     expect(screen.queryByTestId('anime-details')).not.toBeInTheDocument();
-  });
-
-  test('shows AnimeDetails when details param is present in URL', () => {
-    renderMain('/?details=1');
-    expect(screen.getByTestId('anime-details')).toBeInTheDocument();
   });
 });

@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
-import { MemoryRouter, useSearchParams } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import Card from './Card';
 
 const mockCard = {
@@ -13,16 +13,10 @@ const mockCard = {
   year: 1998,
 };
 
-function SearchParamsDisplay() {
-  const [params] = useSearchParams();
-  return <div data-testid="params">{params.toString()}</div>;
-}
-
 function renderCard(props = mockCard) {
   return render(
     <MemoryRouter>
       <Card {...props} />
-      <SearchParamsDisplay />
     </MemoryRouter>
   );
 }
@@ -70,10 +64,9 @@ describe('Card Component', () => {
     expect(screen.getByText(mockCard.synopsis)).toBeInTheDocument();
   });
 
-  test('clicking card sets ?details=mal_id in search params', () => {
+  test('card link points to details route', () => {
     renderCard();
-    fireEvent.click(screen.getByText(mockCard.title_english));
-    expect(screen.getByTestId('params').textContent).toContain('details=42');
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/details/42');
   });
 });
 

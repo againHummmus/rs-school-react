@@ -44,7 +44,7 @@ describe('Search Header Component', () => {
       <SearchHeader searchItem="Initial" setSearchItem={vi.fn()} />
     );
     
-    const input = screen.getByRole('textbox') as HTMLInputElement;
+    const input = screen.getByRole('searchbox') as HTMLInputElement;
     expect(input.value).toBe('Initial');
 
     rerender(<SearchHeader searchItem="Updated" setSearchItem={vi.fn()} />);

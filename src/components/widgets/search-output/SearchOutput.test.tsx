@@ -12,7 +12,7 @@ const renderOutput = (searchItem: string) =>
     </MemoryRouter>
   );
 
-vi.mock('../lib/fetch', () => {
+vi.mock('../../../lib/fetch', () => {
   return {
     default: vi.fn(),
   };
@@ -28,7 +28,7 @@ describe('SearchOutput Component', () => {
 
     renderOutput('Eva');
 
-    const loadingElement = screen.getByText(/loading.../i);
+    const loadingElement = screen.getByText(/Loading.../i);
     expect(loadingElement).toBeInTheDocument();
   });
 
@@ -41,7 +41,7 @@ describe('SearchOutput Component', () => {
     renderOutput('Neon');
 
     await waitFor(() => {
-      expect(screen.queryByText(/loading.../i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument();
     });
 
     expect(fetchAnime).toHaveBeenCalledWith({ page: 1, limit: 10, q: 'Neon' });
