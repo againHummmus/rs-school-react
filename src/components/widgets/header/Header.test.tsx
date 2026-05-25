@@ -6,7 +6,7 @@ import Header from './Header';
 function renderHeader(initialEntry = '/') {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
-      <Header setShowPopup={() => {}} />
+      <Header setShowFlyout={() => {}} />
     </MemoryRouter>
   );
 }

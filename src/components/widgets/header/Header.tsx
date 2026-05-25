@@ -6,7 +6,7 @@ import MoonStarsBoldIcon from '~icons/solar/moon-stars-bold';
 import { ThemeContext } from '../../../context/createContext';
 import { useContext } from 'react';
 
-export default function Header({setShowPopup}: {setShowPopup: (value: boolean) => void}) {
+export default function Header({setShowFlyout}: {setShowFlyout: (value: boolean) => void}) {
   const [theme, setTheme] = useContext(ThemeContext);
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `transition-opacity font-semibold text-lg ${isActive && 'text-accent-dark'}`;
@@ -28,7 +28,7 @@ export default function Header({setShowPopup}: {setShowPopup: (value: boolean) =
             ) : (
               <button className="cursor-pointer hover:text-accent-dark transition-all" onClick={() => setTheme('dark')}><MoonStarsBoldIcon /></button>
             )}
-            <button className={'cursor-pointer font-semibold text-lg'} onClick={() => setShowPopup(true)}>
+            <button className={'cursor-pointer font-semibold text-lg'} onClick={() => setShowFlyout(true)}>
               My items
             </button>
             <NavLink to="/about" className={linkClass}>

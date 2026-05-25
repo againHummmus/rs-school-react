@@ -36,7 +36,7 @@ function downloadCSV(items: Anime[]) {
   URL.revokeObjectURL(url);
 }
 
-export default function SelectedItems({setShowPopup}: {setShowPopup: (value: boolean) => void}) {
+export default function SelectedItems() {
   const selectedItems = useStore((state) => state.selectedItems);
   const removeAllSelectedItems = useStore((state) => state.removeAllSelectedItems);
 
@@ -50,13 +50,6 @@ export default function SelectedItems({setShowPopup}: {setShowPopup: (value: boo
               {selectedItems.length}
             </span>
           </div>
-          <button
-            aria-label="Close"
-            className="cursor-pointer text-background/50 hover:text-background transition-colors text-2xl font-bold leading-none"
-            onClick={() => setShowPopup(false)}
-          >
-            ×
-          </button>
         </div>
 
         <ul className='flex flex-col gap-2'>

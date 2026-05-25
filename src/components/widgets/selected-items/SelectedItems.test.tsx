@@ -41,13 +41,13 @@ const mockAnime: Anime[] = [
 
 const mockUseStore = vi.mocked(useStore);
 
-function renderSelectedItems(setShowPopup = vi.fn(), items: Anime[] = [], removeAll = vi.fn()) {
+function renderSelectedItems(items: Anime[] = [], removeAll = vi.fn()) {
   mockUseStore.mockImplementation(((selector: (state: object) => unknown) =>
     selector({ selectedItems: items, removeAllSelectedItems: removeAll })
   ) as typeof useStore);
   return render(
     <MemoryRouter>
-      <SelectedItems setShowPopup={setShowPopup} />
+      <SelectedItems />
     </MemoryRouter>
   );
 }
@@ -62,60 +62,47 @@ describe('SelectedItems', () => {
     expect(screen.getByRole('heading', { name: /selected items/i })).toBeInTheDocument();
   });
 
-  test('renders close button', () => {
-    renderSelectedItems();
-    expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
-  });
-
-  test('calls setShowPopup(false) when close button clicked', async () => {
-    const setShowPopup = vi.fn();
-    renderSelectedItems(setShowPopup);
-    await userEvent.click(screen.getByRole('button', { name: /close/i }));
-    expect(setShowPopup).toHaveBeenCalledWith(false);
-    expect(setShowPopup).toHaveBeenCalledTimes(1);
-  });
-
   test('shows count of selected items', () => {
-    renderSelectedItems(vi.fn(), mockAnime);
+    renderSelectedItems(mockAnime);
     expect(screen.getByText('2')).toBeInTheDocument();
   });
 
   test('shows 0 count when no items selected', () => {
-    renderSelectedItems(vi.fn(), []);
+    renderSelectedItems([]);
     expect(screen.getByText('0')).toBeInTheDocument();
   });
 
   test('renders no cards when selectedItems is empty', () => {
-    renderSelectedItems(vi.fn(), []);
+    renderSelectedItems([]);
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 
   test('renders a MiniCard for each selected item', () => {
-    renderSelectedItems(vi.fn(), mockAnime);
+    renderSelectedItems(mockAnime);
     expect(screen.getByText('Cowboy Bebop')).toBeInTheDocument();
     expect(screen.getByText('Trigun')).toBeInTheDocument();
   });
 
   test('renders correct number of links for selected items', () => {
-    renderSelectedItems(vi.fn(), mockAnime);
+    renderSelectedItems(mockAnime);
     expect(screen.getAllByRole('link')).toHaveLength(mockAnime.length);
   });
 
   test('Download and Deselect all buttons are disabled when no items', () => {
-    renderSelectedItems(vi.fn(), []);
+    renderSelectedItems([]);
     expect(screen.getByRole('button', { name: /download/i })).toBeDisabled();
     expect(screen.getByRole('button', { name: /deselect all/i })).toBeDisabled();
   });
 
   test('Download and Deselect all buttons are enabled when items exist', () => {
-    renderSelectedItems(vi.fn(), mockAnime);
+    renderSelectedItems(mockAnime);
     expect(screen.getByRole('button', { name: /download/i })).not.toBeDisabled();
     expect(screen.getByRole('button', { name: /deselect all/i })).not.toBeDisabled();
   });
 
   test('calls removeAllSelectedItems when Deselect all clicked', async () => {
     const removeAll = vi.fn();
-    renderSelectedItems(vi.fn(), mockAnime, removeAll);
+    renderSelectedItems(mockAnime, removeAll);
     await userEvent.click(screen.getByRole('button', { name: /deselect all/i }));
     expect(removeAll).toHaveBeenCalledTimes(1);
   });
@@ -129,7 +116,7 @@ describe('SelectedItems', () => {
     const hrefSpy = vi.spyOn(HTMLAnchorElement.prototype, 'href', 'set');
     const downloadSpy = vi.spyOn(HTMLAnchorElement.prototype, 'download', 'set');
 
-    renderSelectedItems(vi.fn(), mockAnime);
+    renderSelectedItems(mockAnime);
     await userEvent.click(screen.getByRole('button', { name: /download/i }));
 
     expect(createObjectURL).toHaveBeenCalledTimes(1);
@@ -152,7 +139,7 @@ describe('SelectedItems', () => {
     vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
     vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
 
-    renderSelectedItems(vi.fn(), mockAnime);
+    renderSelectedItems(mockAnime);
     await userEvent.click(screen.getByRole('button', { name: /download/i }));
 
     const blob = createObjectURL.mock.calls[0][0];
