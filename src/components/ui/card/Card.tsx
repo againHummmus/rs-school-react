@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 type CardProps = {
   mal_id: number;
@@ -15,20 +15,12 @@ type CardProps = {
 };
 
 export default function Card({ mal_id, title_english, title_japanese, episodes, images, synopsis, year }: CardProps) {
-  const [, setSearchParams] = useSearchParams();
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSearchParams((prev) => {
-      prev.set('details', String(mal_id));
-      return prev;
-    });
-  };
+const [searchParams] = useSearchParams();
+const page = searchParams.get('page');
 
   return (
-    <div
-      onClick={handleClick}
-      className="cursor-pointer flex backdrop-blur-lg gap-4 rounded-2xl border border-foreground/30 hover:border-foreground/60 transition-all bg-foreground/10 p-4"
+    <Link to={{ pathname: `details/${mal_id}`, search: page ? `?page=${page}` : '' }}
+      className="cursor-pointer text-background flex gap-4 rounded-2xl border border-foreground/30 hover:border-foreground/60 transition-all bg-foreground p-4"
     >
       <img
           src={images.webp.image_url}
@@ -37,33 +29,33 @@ export default function Card({ mal_id, title_english, title_japanese, episodes, 
       />
       <div className="flex flex-col gap-1 min-w-0">
         <div>
-          <p className="text-text font-semibold text-lg leading-tight">
+          <p className="text-background font-semibold text-lg leading-tight">
             {title_english ?? title_japanese}
           </p>
-          <p className="text-foreground/70 text-xs mt-0.5">
+          <p className="text-background/70 text-xs mt-0.5">
             {title_english ? title_japanese : ''}
           </p>
         </div>
-        <div className="flex gap-4 text-sm text-foreground/80 mt-1">
+        <div className="flex gap-4 text-sm text-background/80 mt-1">
           {episodes && (
             <span>
-              <span className="text-accent">Episodes: </span>
+              <span className="text-background">Episodes: </span>
               {episodes}
             </span>
           )}
           {year && (
             <span>
-              <span className="text-accent">Year: </span>
+              <span className="text-background">Year: </span>
               {year}
             </span>
           )}
         </div>
         {synopsis && (
-          <p className="text-foreground/70 text-sm mt-1 line-clamp-3">
+          <p className="text-background/70 text-sm mt-1 line-clamp-3">
             {synopsis}
           </p>
         )}
       </div>
-    </div>
+    </Link>
   );
 }

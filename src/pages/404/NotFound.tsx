@@ -7,7 +7,7 @@ export default function NotFound() {
       <p className="text-foreground/70 text-xl">Page not found</p>
       <Link
         to="/"
-        className="text-accent font-semibold hover:opacity-70 transition-opacity underline"
+        className="text-accent-light font-semibold hover:opacity-70 transition-opacity underline"
       >
         Go home!
       </Link>

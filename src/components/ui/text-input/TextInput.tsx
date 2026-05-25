@@ -14,11 +14,12 @@ export default function TextInput({
 }: TextInputProps) {
   return (
     <div className="relative h-10 flex grow">
-      <SolarMagniferOutline className="absolute top-1/2 -translate-y-1/2 left-2 text-foreground/70" />
+      <SolarMagniferOutline className="absolute top-1/2 -translate-y-1/2 left-2 text-accent-light" />
       <input
+        type="search"
         value={value}
         onChange={onChange}
-        className="w-full h-full pl-10 pr-2 rounded-lg bg-foreground/30 text-text focus:outline-none focus:ring-2 focus:ring-accent/60 placeholder:text-foreground"
+        className="w-full h-full border border-accent-light/50 pl-10 pr-2 rounded-lg bg-foreground text-background focus:outline-none focus:ring focus:ring-accent-light placeholder:text-foreground"
         placeholder={placeholder}
       />
     </div>

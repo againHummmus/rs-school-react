@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import Button from './ui/Button';
-import TextInput from './ui/TextInput';
+import React, { useState } from 'react';
+import TextInput from '../../ui/text-input/TextInput';
+import Button from '../../ui/button/Button';
 
 type HeaderPropsType = {
   searchItem: string;
@@ -13,10 +13,6 @@ export default function SearchHeader({
 }: HeaderPropsType) {
   const [inputValue, setInputValue] = useState(searchItem);
 
-  useEffect(() => {
-    setInputValue(searchItem);
-  }, [searchItem]);
-
   const handleSearch = () => {
     const cleanValue = inputValue.trim();
     setSearchItem(cleanValue);
@@ -27,8 +23,8 @@ export default function SearchHeader({
   };
 
   return (
-    <div className="flex flex-col gap-4 border border-foreground bg-foreground/10 rounded-3xl p-6 backdrop-blur-lg">
-      <h1 className="text-text font-display text-4xl">
+    <div className="flex flex-col gap-4 bg-foreground/80 rounded-3xl p-6 backdrop-blur-lg">
+      <h1 className="text-background font-display text-4xl">
         Search for anime!
       </h1>
 

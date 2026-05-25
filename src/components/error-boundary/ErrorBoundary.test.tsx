@@ -6,11 +6,11 @@ const ProblematicComponent = ({ shouldThrow, fatalError }: { shouldThrow: boolea
   if (shouldThrow) {
     throw new Error(fatalError || 'Fatal Error!!!');
   }
-  return <div>It's working!</div>;
+  return <div>It&apos;s working!</div>;
 };
 
 describe('Error Boundary Component', () => {
-  let consoleSpy: any;
+  let consoleSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

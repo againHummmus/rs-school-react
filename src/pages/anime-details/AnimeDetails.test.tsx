@@ -3,7 +3,7 @@ import { describe, expect, test, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import AnimeDetails from './AnimeDetails';
-import { fetchAnimeById } from '../lib/fetch';
+import { fetchAnimeById } from '../../lib/fetch';
 
 vi.mock('../lib/fetch', () => ({
   default: vi.fn(),

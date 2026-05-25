@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import ErrorButton from './ui/ErrorButton';
+import ErrorButton from '../../ui/error-button/ErrorButton';
 
 export default function Header() {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `transition-opacity font-semibold text-lg ${isActive ? 'text-accent' : 'text-text/60 hover:text-text'}`;
+    `transition-opacity font-semibold text-lg ${isActive && 'text-accent-dark'}`;
 
   return (
-    <header className="sticky top-0 z-100 flex items-center justify-between px-30 py-3 bg-background/5 backdrop-blur-2xl border-b border-foreground/20 pb-4 mb-2">
+    <header className="sticky top-0 z-100 flex items-center justify-between px-30 py-3 bg-foreground/40 text-background backdrop-blur-2xl border-b border-foreground/20 pb-4 mb-2">
       <NavLink to="/" end className={linkClass}>
         Home
       </NavLink>

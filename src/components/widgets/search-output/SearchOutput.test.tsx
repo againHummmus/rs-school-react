@@ -2,8 +2,8 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import SearchOutput from './SearchOutput';
-import fetchAnime from '../lib/fetch';
-import mockAnimeList from '../test-utils/mockAnimeList';
+import fetchAnime from '../../../lib/fetch';
+import mockAnimeList from '../../../test-utils/mockAnimeList';
 
 const renderOutput = (searchItem: string) =>
   render(

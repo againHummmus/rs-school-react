@@ -35,19 +35,19 @@ describe('Header Component', () => {
   test('Home link is active when at /', () => {
     renderHeader('/');
     const homeLink = screen.getByRole('link', { name: /home/i });
-    expect(homeLink.className).toContain('text-accent');
+    expect(homeLink.className).toContain('text-accent-light');
   });
 
   test('About link is active when at /about', () => {
     renderHeader('/about');
     const aboutLink = screen.getByRole('link', { name: /about/i });
-    expect(aboutLink.className).toContain('text-accent');
+    expect(aboutLink.className).toContain('text-accent-light');
   });
 
   test('Home link is not active when at /about', () => {
     renderHeader('/about');
     const homeLink = screen.getByRole('link', { name: /home/i });
-    expect(homeLink.className).not.toContain('text-accent');
+    expect(homeLink.className).not.toContain('text-accent-light');
   });
 
   test('renders ErrorButton inside header', () => {

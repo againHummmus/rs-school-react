@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import fetchAnime from '../lib/fetch';
-import Card from './ui/Card';
+import fetchAnime from '../../../lib/fetch';
+import Card from '../../ui/card/Card';
 import { useSearchParams } from 'react-router-dom';
-import PaginationButtons from './ui/PaginationButtons';
+import PaginationButtons from '../../ui/pagination-buttons/PaginationButtons';
 
 type AnimeItem = {
   mal_id: number;
@@ -71,7 +71,7 @@ export default function SearchOutput({ searchItem }: OutputPropsType) {
     <div className="flex flex-col gap-4 grow">
       {error && (
         <p className="text-text font-bold text-2xl">
-          Something went wrong :( <br /> Error: "{error.message}"
+          Something went wrong :( <br /> Error: &quot;{error.message}&quot;
         </p>
       )}
       {isLoading && <p className="text-text font-bold text-2xl">Loading...</p>}
