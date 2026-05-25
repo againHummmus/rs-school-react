@@ -121,19 +121,47 @@ describe('SelectedItems', () => {
   });
 
   test('clicking Download triggers file download', async () => {
-    const createObjectURL = vi.fn(() => 'blob:url');
+    const createObjectURL = vi.fn((_blob: Blob) => 'blob:url');
     const revokeObjectURL = vi.fn();
     vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
 
     const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    const hrefSpy = vi.spyOn(HTMLAnchorElement.prototype, 'href', 'set');
+    const downloadSpy = vi.spyOn(HTMLAnchorElement.prototype, 'download', 'set');
 
     renderSelectedItems(vi.fn(), mockAnime);
     await userEvent.click(screen.getByRole('button', { name: /download/i }));
 
     expect(createObjectURL).toHaveBeenCalledTimes(1);
+    const blob = createObjectURL.mock.calls[0][0];
+    expect(blob).toBeInstanceOf(Blob);
+    expect(blob.type).toContain('text/csv');
+
+    expect(downloadSpy).toHaveBeenCalledWith(`${mockAnime.length}_items.csv`);
     expect(clickSpy).toHaveBeenCalledTimes(1);
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:url');
 
     clickSpy.mockRestore();
+    hrefSpy.mockRestore();
+    downloadSpy.mockRestore();
+  });
+
+  test('CSV contains headers and item data', async () => {
+    const createObjectURL = vi.fn((_blob: Blob) => 'blob:url');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+    renderSelectedItems(vi.fn(), mockAnime);
+    await userEvent.click(screen.getByRole('button', { name: /download/i }));
+
+    const blob = createObjectURL.mock.calls[0][0];
+    const text = await blob.text();
+
+    expect(text).toContain('ID,Title,Title (Japanese),Year,Episodes,Score,Status,Rating,Duration,Genres,Description,Details URL');
+    expect(text).toContain('Cowboy Bebop');
+    expect(text).toContain('Trigun');
+    expect(text).toContain('/details/1');
+    expect(text).toContain('/details/2');
   });
 });

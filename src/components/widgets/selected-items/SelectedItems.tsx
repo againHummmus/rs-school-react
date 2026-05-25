@@ -1,17 +1,37 @@
 import useStore from "../../../store/store";
 import MiniCard from "../../ui/mini-card/MiniCard";
+import type { Anime } from "../../types";
 
-function downloadCSV(items: { mal_id: number; title_english: string | null; title_japanese: string; year: number }[]) {
-  const header = 'ID,Title,Year';
-  const rows = items.map((item) =>
-    `${item.mal_id},"${item.title_english ?? item.title_japanese}",${item.year}`
-  );
-  const csv = [header, ...rows].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
+function escapeCSV(value: string | number | null | undefined): string {
+  const str = String(value ?? '');
+  return str.includes(',') || str.includes('"') || str.includes('\n')
+    ? `"${str.replace(/"/g, '""')}"`
+    : str;
+}
+
+function downloadCSV(items: Anime[]) {
+  const headers = ['ID', 'Title', 'Title (Japanese)', 'Year', 'Episodes', 'Score', 'Status', 'Rating', 'Duration', 'Genres', 'Description', 'Details URL'];
+  const rows = items.map((item) => [
+    item.mal_id,
+    escapeCSV(item.title_english ?? item.title_japanese),
+    escapeCSV(item.title_japanese),
+    item.year || '',
+    item.episodes || '',
+    item.score || '',
+    escapeCSV(item.status),
+    escapeCSV(item.rating),
+    escapeCSV(item.duration),
+    escapeCSV(item.genres.map((g) => g.name).join('; ')),
+    escapeCSV(item.synopsis),
+    `${window.location.origin}/details/${item.mal_id}`,
+  ].join(','));
+
+  const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'selected-anime.csv';
+  a.download = `${items.length}_items.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
