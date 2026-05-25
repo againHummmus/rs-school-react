@@ -12,6 +12,7 @@ type AnimeItem = {
   images: {
     webp: {
       image_url: string;
+      large_image_url: string;
     };
   };
   synopsis: string;

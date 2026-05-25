@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import TextInput from '../../ui/text-input/TextInput';
 import Button from '../../ui/button/Button';
 
@@ -12,10 +12,12 @@ export default function SearchHeader({
   setSearchItem,
 }: HeaderPropsType) {
   const [inputValue, setInputValue] = useState(searchItem);
+  const [prevSearchItem, setPrevSearchItem] = useState(searchItem);
 
-  useEffect(() => {
+  if (searchItem !== prevSearchItem) {
+    setPrevSearchItem(searchItem);
     setInputValue(searchItem);
-  }, [searchItem]);
+  }
 
   const handleSearch = () => {
     const cleanValue = inputValue.trim();
