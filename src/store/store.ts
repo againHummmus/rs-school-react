@@ -1,15 +1,18 @@
 import { create } from 'zustand'
+import type { Anime } from '../components/types'
 
 interface Store {
-  selectedItems: number[]
-  addSelectedItem: (id: number) => void
-  removeSelectedItem: (id: number) => void
+  selectedItems: Anime[]
+  addSelectedItem: (item: Anime) => void
+  removeSelectedItem: (item: Anime) => void
+  removeAllSelectedItems: () => void
 }
 
 const useStore = create<Store>((set) => ({
-  selectedItems: [] as number[],
-  addSelectedItem: (id: number) => set((state) => ({ selectedItems: [...state.selectedItems, id] })),
-  removeSelectedItem: (id: number) => set((state) => ({ selectedItems: state.selectedItems.filter((item) => item !== id) })),
+  selectedItems: [] as Anime[],
+  addSelectedItem: (item: Anime) => set((state) => ({ selectedItems: [...state.selectedItems, item] })),
+  removeSelectedItem: (item: Anime) => set((state) => ({ selectedItems: state.selectedItems.filter((i) => i.mal_id !== item.mal_id) })),
+  removeAllSelectedItems: () => set({ selectedItems: [] }),
 }))
 
 export default useStore

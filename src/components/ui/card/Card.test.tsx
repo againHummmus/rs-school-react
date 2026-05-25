@@ -8,7 +8,7 @@ const mockCard = {
   title_english: 'Cowboy Bebop',
   title_japanese: 'カウボーイビバップ',
   episodes: 26,
-  images: { webp: { image_url: 'https://example.com/bebop.webp' } },
+  images: { webp: { image_url: 'https://example.com/bebop.webp', large_image_url: 'https://example.com/bebop-large.webp' } },
   synopsis: 'Space bounty hunters...',
   year: 1998,
 };

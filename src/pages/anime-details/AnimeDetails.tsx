@@ -1,25 +1,11 @@
 import { Link, useSearchParams, useLoaderData } from 'react-router-dom';
-
-type AnimeDetailType = {
-  mal_id: number;
-  title_english: string | null;
-  title_japanese: string;
-  synopsis: string;
-  episodes: number;
-  year: number;
-  score: number;
-  status: string;
-  duration: string;
-  rating: string;
-  images: { webp: { image_url: string; large_image_url: string } };
-  genres: { mal_id: number; name: string }[];
-};
+import type { Anime } from '../../components/types';
 
 export default function AnimeDetails() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page');
 
-  const anime = useLoaderData() as AnimeDetailType;
+  const anime = useLoaderData() as Anime;
 
   const detailsConfig = [
     { label: 'Score', value: anime.score },
