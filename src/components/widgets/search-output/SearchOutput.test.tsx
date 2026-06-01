@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import SearchOutput from './SearchOutput';
-import fetchAnime from '../../../lib/fetch';
+import { useAnimeList } from '../../../lib/fetch';
 import mockAnimeList from '../../../test-utils/mockAnimeList';
 
 const renderOutput = (searchItem: string) =>
@@ -14,9 +14,11 @@ const renderOutput = (searchItem: string) =>
 
 vi.mock('../../../lib/fetch', () => {
   return {
-    default: vi.fn(),
+    useAnimeList: vi.fn(),
   };
 });
+
+const mockUseAnimeList = vi.mocked(useAnimeList);
 
 describe('SearchOutput Component', () => {
   beforeEach(() => {
@@ -24,36 +26,42 @@ describe('SearchOutput Component', () => {
   });
 
   test('renders loading state', async () => {
-    vi.mocked(fetchAnime).mockReturnValue(new Promise(() => {}));
+    mockUseAnimeList.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+    } as ReturnType<typeof useAnimeList>);
 
-    renderOutput('Eva');
+    const { container } = renderOutput('Eva');
 
-    const loadingElement = screen.getByText(/Loading.../i);
-    expect(loadingElement).toBeInTheDocument();
+    expect(container.querySelector('.animate-spin')).toBeInTheDocument();
   });
 
   test('renders anime list on successful fetch', async () => {
-    vi.mocked(fetchAnime).mockResolvedValue({
-      data: mockAnimeList,
-      pagination: { items: { total: mockAnimeList.length } },
-    });
+    mockUseAnimeList.mockReturnValue({
+      data: {
+        data: mockAnimeList,
+        pagination: { items: { total: mockAnimeList.length } },
+      },
+      isLoading: false,
+      isError: false,
+    } as ReturnType<typeof useAnimeList>);
 
     renderOutput('Neon');
-
-    await waitFor(() => {
-      expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument();
-    });
-
-    expect(fetchAnime).toHaveBeenCalledWith({ page: 1, limit: 10, q: 'Neon' });
+    expect(mockUseAnimeList).toHaveBeenCalledWith({ page: 1, limit: 10, q: 'Neon' });
     expect(screen.getByText('Cowboy Bebop')).toBeInTheDocument();
     expect(screen.getByText('Evangelion')).toBeInTheDocument();
   });
 
   test('renders no results message when API returns empty list', async () => {
-    vi.mocked(fetchAnime).mockResolvedValue({
-      data: [],
-      pagination: { items: { total: 0 } },
-    });
+    mockUseAnimeList.mockReturnValue({
+      data: {
+        data: [],
+        pagination: { items: { total: 0 } },
+      },
+      isLoading: false,
+      isError: false,
+    } as ReturnType<typeof useAnimeList>);
 
     renderOutput('Unknown');
 
@@ -62,24 +70,27 @@ describe('SearchOutput Component', () => {
   });
 
   test('renders error state on API failure', async () => {
-    vi.mocked(fetchAnime).mockRejectedValue(new Error('Network Error'));
-
-    const mockError = new Error('Network Error');
-    const errorMessageText = `Something went wrong :( Error: "${mockError.message}"`;
+    mockUseAnimeList.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+    } as ReturnType<typeof useAnimeList>);
 
     renderOutput('Eva');
 
-    const errorMessage = await screen.findByText(errorMessageText, {
-      exact: false,
-    });
+    const errorMessage = await screen.findByText('Something went wrong :(');
     expect(errorMessage).toBeInTheDocument();
   });
 
-  test('triggers re-fetch when searchItem prop updates', async () => {
-    vi.mocked(fetchAnime).mockResolvedValue({
-      data: [],
-      pagination: { items: { total: 0 } },
-    });
+  test('updates query params when searchItem prop updates', async () => {
+    mockUseAnimeList.mockReturnValue({
+      data: {
+        data: [],
+        pagination: { items: { total: 0 } },
+      },
+      isLoading: false,
+      isError: false,
+    } as ReturnType<typeof useAnimeList>);
 
     const { rerender } = render(
       <MemoryRouter>
@@ -87,8 +98,7 @@ describe('SearchOutput Component', () => {
       </MemoryRouter>
     );
 
-    expect(fetchAnime).toHaveBeenCalledTimes(1);
-    expect(fetchAnime).toHaveBeenLastCalledWith({
+    expect(mockUseAnimeList).toHaveBeenLastCalledWith({
       page: 1,
       limit: 10,
       q: 'Bebop',
@@ -101,20 +111,24 @@ describe('SearchOutput Component', () => {
     );
 
     await waitFor(() => {
-      expect(fetchAnime).toHaveBeenCalledTimes(2);
+      expect(mockUseAnimeList).toHaveBeenCalledTimes(2);
     });
-    expect(fetchAnime).toHaveBeenLastCalledWith({
+    expect(mockUseAnimeList).toHaveBeenLastCalledWith({
       page: 1,
       limit: 10,
       q: 'Tengen',
     });
   });
 
-  test('does NOT trigger re-fetch when searchItem prop stays the same', async () => {
-    vi.mocked(fetchAnime).mockResolvedValue({
-      data: [],
-      pagination: { items: { total: 0 } },
-    });
+  test('keeps same query params when searchItem prop stays the same', async () => {
+    mockUseAnimeList.mockReturnValue({
+      data: {
+        data: [],
+        pagination: { items: { total: 0 } },
+      },
+      isLoading: false,
+      isError: false,
+    } as ReturnType<typeof useAnimeList>);
 
     const { rerender } = render(
       <MemoryRouter>
@@ -122,8 +136,8 @@ describe('SearchOutput Component', () => {
       </MemoryRouter>
     );
 
-    expect(fetchAnime).toHaveBeenCalledTimes(1);
-    expect(fetchAnime).toHaveBeenLastCalledWith({
+    expect(mockUseAnimeList).toHaveBeenCalledTimes(1);
+    expect(mockUseAnimeList).toHaveBeenLastCalledWith({
       page: 1,
       limit: 10,
       q: 'Bebop',
@@ -133,14 +147,16 @@ describe('SearchOutput Component', () => {
       expect(screen.queryByText(/loading.../i)).not.toBeInTheDocument();
     });
 
-    vi.mocked(fetchAnime).mockClear();
-
     rerender(
       <MemoryRouter>
         <SearchOutput searchItem="Bebop" />
       </MemoryRouter>
     );
 
-    expect(fetchAnime).not.toHaveBeenCalled();
+    expect(mockUseAnimeList).toHaveBeenLastCalledWith({
+      page: 1,
+      limit: 10,
+      q: 'Bebop',
+    });
   });
 });
