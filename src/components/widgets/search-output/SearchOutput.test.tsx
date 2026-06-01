@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import SearchOutput from './SearchOutput';
@@ -118,6 +118,61 @@ describe('SearchOutput Component', () => {
       limit: 10,
       q: 'Tengen',
     });
+  });
+
+  test('renders refresh button', () => {
+    mockUseAnimeList.mockReturnValue({
+      data: { data: mockAnimeList, pagination: { items: { total: mockAnimeList.length } } },
+      isLoading: false,
+      isError: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useAnimeList>);
+
+    renderOutput('Neon');
+    expect(screen.getByRole('button', { name: /refresh results/i })).toBeInTheDocument();
+  });
+
+  test('calls refetch when refresh button is clicked', () => {
+    const refetch = vi.fn();
+    mockUseAnimeList.mockReturnValue({
+      data: { data: mockAnimeList, pagination: { items: { total: mockAnimeList.length } } },
+      isLoading: false,
+      isError: false,
+      isFetching: false,
+      refetch,
+    } as unknown as ReturnType<typeof useAnimeList>);
+
+    renderOutput('Neon');
+    fireEvent.click(screen.getByRole('button', { name: /refresh results/i }));
+    expect(refetch).toHaveBeenCalledTimes(1);
+  });
+
+  test('disables refresh button while fetching', () => {
+    mockUseAnimeList.mockReturnValue({
+      data: { data: mockAnimeList, pagination: { items: { total: mockAnimeList.length } } },
+      isLoading: false,
+      isError: false,
+      isFetching: true,
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useAnimeList>);
+
+    renderOutput('Neon');
+    expect(screen.getByRole('button', { name: /refresh results/i })).toBeDisabled();
+  });
+
+  test('shows cached data during background refetch without full-page spinner', () => {
+    mockUseAnimeList.mockReturnValue({
+      data: { data: mockAnimeList, pagination: { items: { total: mockAnimeList.length } } },
+      isLoading: false,
+      isError: false,
+      isFetching: true,
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useAnimeList>);
+
+    const { container } = renderOutput('Neon');
+    expect(screen.getByText('Cowboy Bebop')).toBeInTheDocument();
+    expect(container.querySelector('.animate-spin')).not.toBeInTheDocument();
   });
 
   test('keeps same query params when searchItem prop stays the same', async () => {

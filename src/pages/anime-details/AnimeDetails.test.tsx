@@ -48,6 +48,28 @@ describe('AnimeDetails Component', () => {
     } as ReturnType<typeof useAnimeDetails>);
   });
 
+  test('renders loading spinner', () => {
+    vi.mocked(useAnimeDetails).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+    } as ReturnType<typeof useAnimeDetails>);
+
+    const { container } = renderDetails();
+    expect(container.querySelector('.animate-spin')).toBeInTheDocument();
+  });
+
+  test('renders error state', () => {
+    vi.mocked(useAnimeDetails).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+    } as ReturnType<typeof useAnimeDetails>);
+
+    renderDetails();
+    expect(screen.getByText('Something went wrong :(')).toBeInTheDocument();
+  });
+
   test('renders anime title', () => {
     renderDetails();
     expect(screen.getByRole('heading', { name: /cowboy bebop/i })).toBeInTheDocument();

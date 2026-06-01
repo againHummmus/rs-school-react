@@ -28,7 +28,7 @@
 }
 
 .light {
-  --color-main-background-overlay: rgba(230, 245, 255, 0.7);
+  --color-main-background-overlay: rgba(230, 245, 255, 0.4);
   --color-background: rgb(134, 73, 24);
   --color-foreground: rgb(230, 245, 255);
   --color-accent-light: rgb(156, 194, 255);
