@@ -14,7 +14,16 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 
-const queryClient = new QueryClient();
+const cacheTTL = Number(import.meta.env.VITE_CACHE_TTL) || 300000;
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: cacheTTL,
+      gcTime: cacheTTL * 2,
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
