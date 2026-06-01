@@ -29,7 +29,7 @@ export default function SearchOutput({ searchItem }: OutputPropsType) {
   const page = searchParams.get('page')
     ? parseInt(searchParams.get('page')!)
     : 1;
-  const { data, isLoading, isError } = useAnimeList({
+  const { data, isLoading, isError, refetch, isFetching } = useAnimeList({
     page,
     limit: LIMIT,
     q: searchItem.trim(),
@@ -52,6 +52,16 @@ export default function SearchOutput({ searchItem }: OutputPropsType) {
 
   return (
     <div className="flex flex-col gap-4 grow">
+      <div className="flex justify-center sticky top-20 z-10">
+        <button
+          onClick={() => refetch()}
+          disabled={isFetching}
+          aria-label="Refresh results"
+          className="cursor-pointer flex items-center gap-1.5 px-3 h-8 rounded-lg border border-foreground/30 text-foreground text-sm bg-accent-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Refresh
+        </button>
+      </div>
       {isError && (
         <p className="text-text font-bold text-2xl">Something went wrong :(</p>
       )}
