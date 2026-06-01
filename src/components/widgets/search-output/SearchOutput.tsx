@@ -57,7 +57,7 @@ export default function SearchOutput({ searchItem }: OutputPropsType) {
           onClick={() => refetch()}
           disabled={isFetching}
           aria-label="Refresh results"
-          className="cursor-pointer flex items-center gap-1.5 px-3 h-8 rounded-lg border border-foreground/30 text-foreground text-sm bg-accent-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="cursor-pointer flex items-center gap-1.5 px-3 h-8 rounded-lg border border-foreground/30 text-white text-sm bg-accent-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Refresh
         </button>
