@@ -12,13 +12,13 @@ export default function Layout() {
 
   return (
     <ThemeContext.Provider value={[theme, setTheme]}>
-      <div className={`min-h-screen flex flex-col bg-main-background/50 text-foreground transition-colors ${theme === 'dark' ? 'dark' : 'light'}`}>
+      <main className={`min-h-screen flex flex-col text-foreground transition-colors ${theme === 'dark' ? 'dark' : 'light'}`}>
         <Header setShowFlyout={setShowFlyout} />
         <div className="container my-8 lg:my-12">
           <Outlet />
         </div>
         {(showFlyout || selectedItems.length > 0) && <SelectedItems />}
-      </div>
+      </main>
     </ThemeContext.Provider>
   );
 }

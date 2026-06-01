@@ -52,7 +52,7 @@ export default function SelectedItems() {
           </div>
         </div>
 
-        <ul className='flex flex-col gap-2'>
+        <ul className='max-h-75 overflow-y-scroll no-scrollbar flex flex-col gap-2'>
           {selectedItems.map((item) => (
             <MiniCard key={item.mal_id} {...item} />
           ))}

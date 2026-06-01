@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import fetchAnime from '../../../lib/fetch';
+import { useEffect, useRef } from 'react';
+import { useAnimeList } from '../../../lib/fetch';
 import Card from '../../ui/card/Card';
 import { useSearchParams } from 'react-router-dom';
 import PaginationButtons from '../../ui/pagination-buttons/PaginationButtons';
@@ -24,35 +24,18 @@ type OutputPropsType = {
 };
 
 export default function SearchOutput({ searchItem }: OutputPropsType) {
-  const [anime, setAnime] = useState<AnimeItem[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const LIMIT = 10;
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get('page')
     ? parseInt(searchParams.get('page')!)
     : 1;
-  const LIMIT = 10;
+  const { data, isLoading, isError } = useAnimeList({
+    page,
+    limit: LIMIT,
+    q: searchItem.trim(),
+  });
+
   const prevSearchItem = useRef(searchItem);
-
-  const loadAnime = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetchAnime({
-        page: page,
-        limit: LIMIT,
-        q: searchItem.trim(),
-      });
-      setAnime(response.data);
-      setTotal(response.pagination.items.total);
-    } catch (error) {
-      setError(error as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (prevSearchItem.current !== searchItem) {
@@ -65,28 +48,29 @@ export default function SearchOutput({ searchItem }: OutputPropsType) {
         return;
       }
     }
-    loadAnime();
   }, [searchItem, page]);
 
   return (
     <div className="flex flex-col gap-4 grow">
-      {error && (
-        <p className="text-text font-bold text-2xl">
-          Something went wrong :( <br /> Error: &quot;{error.message}&quot;
-        </p>
+      {isError && (
+        <p className="text-text font-bold text-2xl">Something went wrong :(</p>
       )}
-      {isLoading && <p className="text-text font-bold text-2xl">Loading...</p>}
-      {!isLoading && !error && anime.length === 0 && (
+      {isLoading && (
+        <div className="flex items-center justify-center">
+          <div className="mt-24 h-12 w-12 rounded-full border-5 border-white border-t-transparent animate-spin"/>
+        </div>
+      )}
+      {!isLoading && !isError && data.data.length === 0 && (
         <p className="text-text font-bold text-2xl">No results found :(</p>
       )}
-      {!isLoading && !error && anime.length > 0 && (
+      {!isLoading && !isError && data.data.length > 0 && (
         <>
           <div className="flex flex-col gap-4">
-            {anime.map((animeItem) => (
+            {data.data.map((animeItem: AnimeItem) => (
               <Card key={animeItem.mal_id} {...animeItem} />
             ))}
           </div>
-          <PaginationButtons total={total} currentPage={page} />
+          <PaginationButtons total={data.pagination.items.total} currentPage={page} />
         </>
       )}
     </div>
