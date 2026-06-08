@@ -51,12 +51,12 @@ export const Modal: React.FC<ModalProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/10"
+      className="fixed max-h-screen overflow-auto inset-0 z-50 flex items-center justify-center bg-background/20"
       onClick={handleOverlayClick}
       role="presentation"
     >
       <div
-        className="relative w-full max-w-lg mx-4 bg-foreground border border-background/10 rounded-2xl shadow-2xl outline-none"
+        className="relative w-full max-w-lg mt-8 mx-auto mb-auto bg-foreground border border-background/10 rounded-2xl shadow-2xl outline-none"
         ref={modalRef}
         tabIndex={-1}
         role="dialog"

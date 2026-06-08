@@ -1,42 +1,58 @@
 import { useState } from 'react';
 import { Modal } from './components/modal/Modal';
+import SubmissionCard from './components/submission-card/SubmissionCard';
+import { useFormStore } from './store/useFormStore';
+import Header from './components/header/Header';
+import { UncontrolledForm } from './components/uncontrolled-form/UncontrolledForm';
+import { ReactHookForm } from './components/react-hook-form/ReactHookForm';
 
 export default function App() {
   const [isUncontrolledOpen, setIsUncontrolledOpen] = useState(false);
   const [isRHFOpen, setIsRHFOpen] = useState(false);
 
+  const submissions = useFormStore((state) => state.submissions);
+  const newSubmissionId = useFormStore((state) => state.newSubmissionId);
+
   return (
     <>
-      <main className="min-h-screen p-4 max-w-6xl mx-auto flex flex-col items-center justify-center gap-6">
-        <button
-          className="bg-accent text-foreground cursor-pointer font-bold py-2 px-4 rounded hover:bg-accent-dark transition-colors"
-          onClick={() => setIsUncontrolledOpen(true)}
-        >
-          Open Uncontrolled Form
-        </button>
+      <Header
+        setIsUncontrolledOpen={setIsUncontrolledOpen}
+        setIsRHFOpen={setIsRHFOpen}
+      />
+      <main className="flex flex-col items-center justify-between gap-2 max-w-6xl mx-auto w-full px-2 py-12">
+        <h2>Submission History ({submissions.length})</h2>
 
-        <button
-          className="bg-accent text-foreground cursor-pointer font-bold py-2 px-4 rounded hover:bg-accent-dark transition-colors"
-          onClick={() => setIsRHFOpen(true)}
-        >
-          Open React Hook Form
-        </button>
+        {submissions.length === 0 ? (
+          <p className="text-foreground/40">
+            No submissions yet. Please fill out the form!
+          </p>
+        ) : (
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 w-full">
+            {submissions.map((item) => (
+              <SubmissionCard
+                key={item.id}
+                item={item}
+                isNew={item.id === newSubmissionId}
+              />
+            ))}
+          </div>
+        )}
       </main>
 
       <Modal
         isOpen={isUncontrolledOpen}
         onClose={() => setIsUncontrolledOpen(false)}
-        title="New Profile (Uncontrolled Form)"
+        title="Uncontrolled Form"
       >
-        <div style={{ padding: '20px' }}>Uncontrolled form</div>
+        <UncontrolledForm onSuccess={() => setIsUncontrolledOpen(false)} />
       </Modal>
 
       <Modal
         isOpen={isRHFOpen}
         onClose={() => setIsRHFOpen(false)}
-        title="New Profile (React Hook Form)"
+        title="React Hook Form"
       >
-        <div style={{ padding: '20px' }}>React Hook Form</div>
+        <ReactHookForm onSuccess={() => setIsRHFOpen(false)} />
       </Modal>
     </>
   );
