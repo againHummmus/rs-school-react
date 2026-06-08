@@ -3,10 +3,12 @@ import SearchOutput from '../../components/widgets/search-output/SearchOutput';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import SearchHeader from '../../components/widgets/search-header/SearchHeader';
 
+
 function Main() {
   const [searchString, setSearchString] = useLocalStorage('lastSearch');
 
   return (
+    
     <div className="flex flex-col md:flex-row gap-3">
       <div className="w-full flex flex-col gap-3">
         <SearchHeader

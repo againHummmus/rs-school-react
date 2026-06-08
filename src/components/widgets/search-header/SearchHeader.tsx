@@ -28,6 +28,12 @@ export default function SearchHeader({
     setInputValue(e.target.value);
   };
 
+  const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 bg-foreground/80 rounded-3xl p-6 backdrop-blur-lg">
       <h1 className="text-background font-display text-4xl">
@@ -38,6 +44,7 @@ export default function SearchHeader({
         <TextInput
           value={inputValue}
           onChange={onChangeInput}
+          onKeyDown={onInputKeyDown}
           placeholder="Search for a character..."
         />
 

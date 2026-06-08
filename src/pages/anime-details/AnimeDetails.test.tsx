@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
-import { MemoryRouter, useLoaderData } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
+import { useAnimeDetails } from '../../lib/fetch';
 import AnimeDetails from './AnimeDetails';
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
-  return { ...actual, useLoaderData: vi.fn() };
-});
+vi.mock('../../lib/fetch', () => ({
+  useAnimeDetails: vi.fn(),
+}));
 
 const mockAnimeDetail = {
   mal_id: 1,
@@ -41,7 +41,33 @@ function renderDetails(initialEntry = '/details/1') {
 
 describe('AnimeDetails Component', () => {
   beforeEach(() => {
-    vi.mocked(useLoaderData).mockReturnValue(mockAnimeDetail);
+    vi.mocked(useAnimeDetails).mockReturnValue({
+      data: { data: mockAnimeDetail },
+      isLoading: false,
+      isError: false,
+    } as ReturnType<typeof useAnimeDetails>);
+  });
+
+  test('renders loading spinner', () => {
+    vi.mocked(useAnimeDetails).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+    } as ReturnType<typeof useAnimeDetails>);
+
+    const { container } = renderDetails();
+    expect(container.querySelector('.animate-spin')).toBeInTheDocument();
+  });
+
+  test('renders error state', () => {
+    vi.mocked(useAnimeDetails).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+    } as ReturnType<typeof useAnimeDetails>);
+
+    renderDetails();
+    expect(screen.getByText('Something went wrong :(')).toBeInTheDocument();
   });
 
   test('renders anime title', () => {

@@ -8,8 +8,22 @@ import About from './pages/about/About';
 import Layout from './pages/layout/Layout';
 import NotFound from './pages/404/NotFound';
 import AnimeDetails from './pages/anime-details/AnimeDetails';
-import { animeDetailsLoader } from './pages/anime-details/animeDetailsLoader';
 import ErrorUI from './components/ui/error-ui/ErrorUI';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
+const cacheTTL = Number(import.meta.env.VITE_CACHE_TTL) || 300000;
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: cacheTTL,
+      gcTime: cacheTTL * 2,
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
@@ -29,7 +43,6 @@ const router = createBrowserRouter([
         children: [
           {
             errorElement: <ErrorUI className="min-w-1/2 max-w-1/2" />,
-            loader: animeDetailsLoader,
             path: 'details/:id',
             element: <AnimeDetails />,
           },
@@ -50,6 +63,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );

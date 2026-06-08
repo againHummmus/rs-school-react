@@ -39,6 +39,24 @@ describe('Search Header Component', () => {
     expect(mockSetSearchItem).toHaveBeenCalled();
   });
 
+  test('calls setSearchItem after Enter is pressed in input', async () => {
+    const mockSearchItem = 'Evangel';
+    const mockSetSearchItem = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <SearchHeader
+        searchItem={mockSearchItem}
+        setSearchItem={mockSetSearchItem}
+      />
+    );
+
+    const inputElement = screen.getByRole('searchbox');
+    await user.type(inputElement, '{enter}');
+
+    expect(mockSetSearchItem).toHaveBeenCalledWith(mockSearchItem);
+  });
+
   test('rerenders when props change', () => {
     const { rerender } = render(
       <SearchHeader searchItem="Initial" setSearchItem={vi.fn()} />
