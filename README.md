@@ -1,1 +1,1 @@
-## Coursework for the Rolling Scopes School React program.
+# react-performance
