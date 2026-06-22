@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  --color-main-background: rgb(5, 10, 20);
+  --color-main-background-overlay: rgba(5, 10, 20, 0.7);
+  --color-text: rgb(230, 245, 255);
+  --color-background: rgb(5, 10, 20);
+  --color-foreground: rgb(230, 245, 255);
+  --color-accent-light: rgb(140, 184, 255);
+  --color-accent-dark: rgb(15, 53, 115);
+  --font-display: var(--font-jersey), serif;
+}
+
+.dark{
+  --color-main-background-overlay: rgba(5, 10, 20, 0.9);
+  --color-background: rgb(230, 245, 255);
+  --color-foreground: rgba(62, 69, 83, 0.904);
+  --color-accent-light: rgb(79, 125, 194);
+  --color-accent-dark: rgb(140, 184, 255);
+}
+
+.light {
+  --color-main-background-overlay: rgba(230, 245, 255, 0.4);
+  --color-background: rgb(134, 73, 24);
+  --color-foreground: rgb(230, 245, 255);
+  --color-accent-light: rgb(156, 194, 255);
+  --color-accent-dark: rgb(15, 53, 115);
+}
+
+@utility container {
+  margin-inline: auto;
+  width: 100%;
+  padding-inline: 1rem;
+}
+
+main {
+  margin: 0;
+  min-height: 100vh;
+  background-image: linear-gradient(var(--color-main-background-overlay), var(--color-main-background-overlay)), url('/assets/gIT2AXw.png');
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; 
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none; 
+}

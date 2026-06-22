@@ -1,0 +1,55 @@
+{
+  "Metadata": {
+    "title": "Anime Search",
+    "description": "Search anime titles powered by the Jikan API."
+  },
+  "LanguageSwitcher": {
+    "label": "Change language"
+  },
+  "Header": {
+    "home": "Home",
+    "myItems": "My items",
+    "about": "About",
+    "toggleTheme": "Toggle theme"
+  },
+  "Search": {
+    "title": "Search for anime!",
+    "placeholder": "Search for a character...",
+    "submit": "Search",
+    "refresh": "Refresh",
+    "error": "Something went wrong :(",
+    "empty": "No results found :("
+  },
+  "Details": {
+    "close": "Close details",
+    "placeholder": "Select an item to see details",
+    "error": "Something went wrong :(",
+    "score": "Score",
+    "episodes": "Episodes",
+    "year": "Year",
+    "status": "Status",
+    "duration": "Duration",
+    "rating": "Rating"
+  },
+  "SelectedItems": {
+    "title": "Selected Items",
+    "download": "Download",
+    "deselectAll": "Deselect all"
+  },
+  "About": {
+    "title": "Seems like you want to learn more about this project! :3",
+    "intro": "This is an anime search application built as part of the <course>RS School React Course</course>. It allows you to search for anime titles using the <api>Jikan API</api> — an unofficial MyAnimeList REST API. For now it includes features like pagination, search history persistence, and error handling. The project is built with the following technologies:",
+    "tech": [
+      { "name": "React 19", "description": "with functional components and hooks" },
+      { "name": "TypeScript", "description": "for type safety" },
+      { "name": "Next.js (App Router)", "description": "for server-side rendering and static generation" },
+      { "name": "next-intl", "description": "for internationalization" },
+      { "name": "Tailwind CSS", "description": "for styling" }
+    ]
+  },
+  "NotFound": {
+    "title": "404",
+    "message": "This page could not be found.",
+    "back": "Back to home"
+  }
+}
